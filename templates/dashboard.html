@@ -37,6 +37,13 @@
     </nav>
 
     <div class="main-container">
+        <!-- Display Coordinates -->
+        <div class="coordinates-display">
+            <h2>Current Coordinates</h2>
+            <p>Latitude: {{ coordinates.lat }}</p>
+            <p>Longitude: {{ coordinates.lon }}</p>
+        </div>
+
         <!-- Hero Section -->
         <section class="hero-section">
             <h1>Keeping Children Safe in a Connected World</h1>
@@ -154,7 +161,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
     <script>
         // Initialize the map and set its view to our chosen geographical coordinates and a zoom level
-        var map = L.map('map').setView([17.6128, 78.4803], 15);
+        var map = L.map('map').setView([{{ coordinates.lat }}, {{ coordinates.lon }}], 15);
 
         // Add a tile layer to the map (the background map)
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -162,9 +169,38 @@
         }).addTo(map);
 
         // Add a marker to the map at the given coordinates
-        L.marker([17.6128, 78.4803]).addTo(map)
+        L.marker([{{ coordinates.lat }}, {{ coordinates.lon }}]).addTo(map)
             .bindPopup('Medchal, Hyderabad')
             .openPopup();
+
+        // Initialize the FeatureGroup to store editable layers
+        var drawnItems = new L.FeatureGroup();
+        map.addLayer(drawnItems);
+
+        // Initialize the draw control and pass it the FeatureGroup of editable layers
+        var drawControl = new L.Control.Draw({
+            edit: {
+                featureGroup: drawnItems
+            }
+        });
+        map.addControl(drawControl);
+
+        // Event handler for when a new layer is created
+        map.on(L.Draw.Event.CREATED, function (event) {
+            var layer = event.layer;
+            drawnItems.addLayer(layer);
+        });
+
+        // Event handler for saving zones
+        document.getElementById('saveZonesBtn').addEventListener('click', function () {
+            var data = drawnItems.toGeoJSON();
+            console.log(JSON.stringify(data));
+        });
+
+        // Event handler for clearing all zones
+        document.getElementById('clearZonesBtn').addEventListener('click', function () {
+            drawnItems.clearLayers();
+        });
     </script>
 </body>
 </html>
