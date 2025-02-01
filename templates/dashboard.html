@@ -8,6 +8,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+    <style>
+        /* Ensure the map container has a height */
+        #map {
+            height: 500px;
+        }
+    </style>
 </head>
 <body class="homepage">
     <!-- Header Navigation -->
@@ -143,6 +149,22 @@
         </div>
     </div>
 
+    <!-- Include necessary JavaScript libraries -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+    <script>
+        // Initialize the map and set its view to our chosen geographical coordinates and a zoom level
+        var map = L.map('map').setView([17.6128, 78.4803], 15);
 
+        // Add a tile layer to the map (the background map)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Add a marker to the map at the given coordinates
+        L.marker([17.6128, 78.4803]).addTo(map)
+            .bindPopup('Medchal, Hyderabad')
+            .openPopup();
+    </script>
 </body>
 </html>
